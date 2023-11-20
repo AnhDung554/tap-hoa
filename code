@@ -1,0 +1,371 @@
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+// tạo kiểu dữ liệu hạn sử dụng
+struct HSD{
+    int day, month, year;
+};
+//tạo kiểu dữ liệu sản phẩm
+struct Item{
+    string name;//tên sản phẩm
+    int price;//giá bán
+    int barcode;//mã sản phẩm
+    int quantity;//số lượng sản phẩm
+    HSD date[2];//nhập hạn sử dụng
+    Item* next;
+};
+//tạo kiểu dữ liệu lưu trữ head và tail
+struct LinkedList{
+    Item* head;
+    Item* tail;
+};
+//tạo sản phẩm mới
+Item* CreateItem(string i_name, int i_price, int i_barcode, int i_quantity, int i_day, int i_month ,int i_year){
+    Item* p=new Item;
+    p->name=i_name;
+    p->price=i_price;
+    p->barcode=i_barcode;
+    p->quantity=i_quantity;
+    p->date[0].day=i_day;
+    p->date[0].month=i_month;
+    p->date[0].year=i_year;
+    p->date[1].day=0;
+    p->date[1].month=0;
+    p->date[1].year=0;
+    p->next=NULL;
+    return p;
+}
+//tạo danh sách
+void CreateList(LinkedList& L){
+    L.head=NULL;
+    L.tail=NULL;
+}
+//duyệt danh sách và in danh sách
+void Print(LinkedList L){
+    if(L.head!=NULL){
+        Item* item = L.head;
+        while(item!=NULL){
+            cout<<item->name<<" Tồn: "<<item->quantity<< endl;
+            item = item->next;
+        }
+    }
+    else
+    cout<<"Kho không có hàng";
+}
+//thêm sản phẩm vào đầu danh sách
+void Addhead(LinkedList& L,Item* &item){
+    if(L.head == NULL){
+        L.head=item;
+        L.tail=item;
+    }
+    else{
+        item->next=L.head;
+        L.head=item;
+    }
+}
+//tìm kiếm sản phẩm
+Item* Search(LinkedList L,int x){
+    Item* item=L.head;
+    while(item != NULL && item->barcode != x)
+    item=item->next;
+    if(item != NULL)
+    return item;
+    return NULL;
+}
+//xoá sản phẩm
+void DeleteItem(LinkedList& L,int x){
+    Item* item = Search(L,x);
+    if(item == NULL){
+    cout<<"Không có sản phẩm cần xoá";
+    return;
+    }
+    if (item == L.head) {
+            L.head = item->next;
+        if(L.tail == item)
+            L.tail = NULL;
+       } 
+       else {
+            Item* p = L.head;
+            while (p->next != item) {
+                p = p->next;
+            }
+            p->next = item->next;
+            if (L.tail == item) {
+                L.tail = p;
+            }
+        }
+        delete item;
+    }
+//xoá đầu
+int DeleteHead(LinkedList&L){
+    if(L.head!=NULL){
+        Item* item = L.head;
+        L.head = item->next;
+        delete item;
+        if(L.head == NULL)
+        L.tail=NULL;
+        return 1;
+    }
+    return 0;
+}
+//xoá toàn bộ sản phẩm
+void DestroyList(LinkedList& L)
+{
+	int x;
+	Item* item = L.head;
+	while (item != NULL){
+		DeleteHead(L);
+		item = L.head;
+	}
+	L.tail = NULL;
+}
+//ktra sản phẩm 
+void PrintOne(LinkedList& L){
+    int x;
+    cout<<"Nhập mã hàng: ";
+    cin>>x;
+    Item* p= Search(L,x);
+    if(p!=NULL)
+        cout<<p->name<<" Giá: "<<p->price<<"VNĐ"<<" Tồn: "<<p->quantity<< endl;
+    else
+    cout<<"Không tìm thấy sản phẩm";
+}
+// Lấy thời gian lịch hiện tại
+    time_t now = time(NULL);
+// Chuyển đổi thành cấu trúc tm
+    tm *timeinfo = localtime(&now);
+//thêm sản phẩm vào cửa hàng
+void Additem(LinkedList& L){
+    string a;
+    int b,c,e;
+    int f1, f2, f3;
+    cout<<"Nhập tên sản phẩm: ";
+    cin.ignore();
+    getline(cin,a);
+    cout<<"\nNhập mã sản phẩm: ";
+    cin>>b;
+    cin.ignore();
+    cout<<"\nNhập giá sản phẩm: ";
+    cin>>c;
+    cin.ignore();
+    cout<<"\nNhập số lượng sản phẩm: ";
+    cin>>e;
+    cin.ignore();
+    cout<<"\nNhập ngày hết hạn của sản phẩm: ";
+    cin>>f1;
+    while(f1<1 || f1>31 || f1<timeinfo->tm_mday){
+      cout<<"\nSai định dạng vui lòng nhập lại: ";
+      cout<<"\nNhập ngày hết hạn của sản phẩm: ";
+      cin>>f1;
+    }
+    cin.ignore();
+    cout<<"\nNhập tháng hết hạn của sản phẩm: ";
+    cin>>f2;
+    while(f2<1 || f2>12 || f2<1+timeinfo->tm_mon){
+      cout<<"\nSai định dạng vui lòng nhập lại: ";
+      cout<<"\nNhập tháng hết hạn của sản phẩm: ";
+      cin>>f2;
+    }
+    cin.ignore();
+    cout<<"\nNhập năm hết hạn của sản phẩm: ";
+    cin>>f3;
+    while(f3<1900+timeinfo->tm_year){
+      cout<<"\nSai định dạng vui lòng nhập lại: ";
+      cout<<"\nNhập năm hết hạn của sản phẩm: ";
+      cin>>f3;
+    }
+    Item* item = CreateItem(a,c,b,e,f1,f2,f3);
+    Addhead(L,item);
+}
+//tạo biến toàn cục 
+    int tien=0; //lưu giá trị tiền
+    int so=0; // lưu số lượng hàng đã bán
+//bán hàng
+void sell(LinkedList& L){
+    int n,x;
+    int y=1;
+    while(y==1){
+        cout<<"\n1. Thêm sản phẩm"<< endl;
+        cout<<"2. In bill";
+        cout<<"\nNhập lựa chọn: ";
+        cin>>y;
+        if(y!=1)
+        return;
+    cout<<"\nNhập mã sản phẩm: ";
+    cin>>x;
+    Item* p= Search(L,x);
+    while(p==NULL){
+        cout<<"không tìm thấy sản phẩm";
+        cout<<"\n1. Nhập lại mã sản phẩm: ";
+        cout<<"\n2. Lối Thoát";
+        cin>>y;
+        if(y==1){
+            cout<<"\nNhập mã sản phẩm: ";
+            cin>>x;
+            p= Search(L,x);
+        }
+        else
+        return;
+    }
+    cout<<"Sản Phẩm: "<< p->name<<" Giá: "<< p->price<<"VNĐ/1SP"<< endl;
+    cout<<"Nhập số lượng hàng cần bán: ";
+    cin>>n;
+    if(n<0){
+    cout<<"Lỗi nhập!";
+    cout<<"Nhập lại số lượng hàng cần bán: ";
+    cin>>n;
+    }
+    p->quantity = p->quantity-n;
+    cout<<"\nThành tiền: "<<p->price*n<<"VNĐ";
+    tien+=p->price*n;
+    so+=n;
+    }
+}
+//nhập hàng
+Item* Eitem(LinkedList& L){
+    int x,y,f1,f2,f3;
+    cout<<"Nhập mã sản phẩm: ";
+    cin>>x;
+    Item* p= Search(L,x);
+    if(p!=NULL){
+        cout<<"\n"<<p->name<<" Tồn: "<<p->quantity<< endl;
+        cout<<"Nhập số lượng: ";
+        cin>>y;
+        while(y<0){
+            cout<<"\nSai định dạng vui lòng nhập lại!";
+            cout<<"\nNhập số lượng: ";
+            cin>>y;
+        }
+        p->quantity=p->quantity+y;
+        cout<<"\nNhập ngày hết hạn của sản phẩm: ";
+        cin>>f1;
+        while(f1<1 || f1>31 || f1<timeinfo->tm_mday){
+            cout<<"\nSai định dạng vui lòng nhập lại: ";
+            cout<<"\nNhập ngày hết hạn của sản phẩm: ";
+            cin>>f1;
+        }
+        cout<<"\nNhập tháng hết hạn của sản phẩm: ";
+        cin>>f2;
+        while(f2<1 || f2>12 || f2<1+timeinfo->tm_mon){
+            cout<<"\nSai định dạng vui lòng nhập lại: ";
+            cout<<"\nNhập tháng hết hạn của sản phẩm: ";
+            cin>>f2;
+        }
+        cout<<"\nNhập năm hết hạn của sản phẩm: ";
+        cin>>f3;
+        while(f3<1900+timeinfo->tm_year){
+            cout<<"\nSai định dạng vui lòng nhập lại: ";
+            cout<<"\nNhập năm hết hạn của sản phẩm: ";
+            cin>>f3;
+        }
+        if(p->date[1].day == 0){
+            p->date[1].day=f1;
+            p->date[1].month=f2;
+            p->date[1].year=f3;
+        }
+        else{
+            for(int i=0;i<2;i++){
+              p->date[i]=p->date[i+1];
+            };
+            p->date[1].day=f1;
+            p->date[1].month=f2;
+            p->date[1].year=f3;
+        }
+    }
+    else
+        cout<<"Không tìm thấy sản phẩm";
+    return p;
+    }
+void Chdate(LinkedList L){
+      if(L.head!=NULL){
+      Item* item= L.head;
+      while(item != NULL){
+          cout<<"["<<item->name<<"]"<<" HSD gần nhất: "<<item->date[0].day<<"/"<<item->date[0].month<<"/"<<item->date[0].year<< endl;
+          item=item->next;
+      }
+    } 
+}
+
+int main() {
+    LinkedList hanghoa; 
+    CreateList(hanghoa);//tạo danh sách hàng hoá
+    //danh sách sản phẩm
+    Item* i1= CreateItem("kẹo mút",500,123000,50,29,2,2024);
+    Addhead(hanghoa,i1);
+    Item* i2= CreateItem("bimbim",7500,123001,50,1,1,2024);
+    Addhead(hanghoa,i2);
+    Item* i3= CreateItem("sữa chua",26000,123002,50,30,4,2024);
+    Addhead(hanghoa,i3);
+    Item* i4= CreateItem("bột giặt",25000,123003,50,5,5,2024);
+    Addhead(hanghoa,i4);
+    Item* i5= CreateItem("nước ngọt",10000,123004,50,6,6,2024);
+    Addhead(hanghoa,i5);
+    Item* i6= CreateItem("dầu ăn",45000,123005,50,10,7,2024);
+    Addhead(hanghoa,i6);
+    //------------------
+    int A;
+    int E=0;
+    do{
+    //system("cls");
+    system("clear"); //xoá màng hình
+    cout<< "1. Bán Hàng"<< endl;
+    cout<< "2. Thêm sản phẩm vào cửa hàng"<< endl;
+    cout<< "3. Xoá sản phẩm khỏi cửa hàng"<< endl;
+    cout<< "4. Nhập hàng"<< endl;
+    cout<< "5. Kiểm tra sản phẩm"<< endl;
+    cout<< "6. Kiểm tra danh sách sản phẩm"<< endl;
+    cout<< "7. kiểm tra danh thu"<< endl;
+    cout<< "8. Kiểm tra hạn sử dụng"<< endl;
+    cout<< "9. Phá Sản"<< endl;
+    cout<< "10. Thoát" << endl;
+    cout<< "Chọn thao tác cần thực hiện:";
+    cin>>A;//nhập lựa chọn
+    cin.clear(); //xóa trạng thái lỗi của cin
+    cin.ignore(); //bỏ qua các kí tự không hợp lệ trong bộ nhớ đệm của cin
+    switch(A){
+        case 1:
+            sell(hanghoa);
+        break;
+        case 2:
+            Additem(hanghoa);
+        break;
+        case 3:{
+            int x;
+            cout<<"Nhập mã sản phẩm cần xoá: ";
+            cin>>x;
+            DeleteItem(hanghoa,x);
+        break;
+        }
+        case 4:
+            Eitem(hanghoa);
+        break;
+        case 5:
+            PrintOne(hanghoa);
+        break;
+        case 6:
+            Print(hanghoa);
+        break;
+        case 7:{
+            cout<<"Tổng danh thu: "<<tien<<"VNĐ"<< endl;
+            cout<<"Tổng sản phẩm đã bán: "<<so<<"SP"<< endl;
+        break;
+        }
+        case 8:
+            Chdate(hanghoa);
+        break;
+        case 9:
+            DestroyList(hanghoa);
+        break;
+        case 10:
+            DestroyList(hanghoa);
+            E=1;
+        break;
+    }
+    cout<<"\nNhấn Enter để tiếp tục";
+    cin.ignore();
+    cin.get();
+} while (E==0);
+    return 0;
+}
