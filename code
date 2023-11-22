@@ -155,7 +155,7 @@ void Additem(LinkedList& L){
     cin.ignore();
     cout<<"\nNhập ngày hết hạn của sản phẩm: ";
     cin>>f1;
-    while(f1<1 || f1>31 || f1<timeinfo->tm_mday){
+    while(f1<1 || f1>31){
       cout<<"\nSai định dạng vui lòng nhập lại: ";
       cout<<"\nNhập ngày hết hạn của sản phẩm: ";
       cin>>f1;
@@ -163,7 +163,7 @@ void Additem(LinkedList& L){
     cin.ignore();
     cout<<"\nNhập tháng hết hạn của sản phẩm: ";
     cin>>f2;
-    while(f2<1 || f2>12 || f2<1+timeinfo->tm_mon){
+    while(f2<1 || f2>12){
       cout<<"\nSai định dạng vui lòng nhập lại: ";
       cout<<"\nNhập tháng hết hạn của sản phẩm: ";
       cin>>f2;
@@ -241,14 +241,14 @@ Item* Eitem(LinkedList& L){
         p->quantity=p->quantity+y;
         cout<<"\nNhập ngày hết hạn của sản phẩm: ";
         cin>>f1;
-        while(f1<1 || f1>31 || f1<timeinfo->tm_mday){
+        while(f1<1 || f1>31){
             cout<<"\nSai định dạng vui lòng nhập lại: ";
             cout<<"\nNhập ngày hết hạn của sản phẩm: ";
             cin>>f1;
         }
         cout<<"\nNhập tháng hết hạn của sản phẩm: ";
         cin>>f2;
-        while(f2<1 || f2>12 || f2<1+timeinfo->tm_mon){
+        while(f2<1 || f2>12){
             cout<<"\nSai định dạng vui lòng nhập lại: ";
             cout<<"\nNhập tháng hết hạn của sản phẩm: ";
             cin>>f2;
