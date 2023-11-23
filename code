@@ -141,17 +141,14 @@ void Additem(LinkedList& L){
     int b,c,e;
     int f1, f2, f3;
     cout<<"Nhập tên sản phẩm: ";
-    cin.ignore();
     getline(cin,a);
+    cin.ignore();
     cout<<"\nNhập mã sản phẩm: ";
     cin>>b;
-    cin.ignore();
     cout<<"\nNhập giá sản phẩm: ";
     cin>>c;
-    cin.ignore();
     cout<<"\nNhập số lượng sản phẩm: ";
     cin>>e;
-    cin.ignore();
     cout<<"\nNhập ngày hết hạn của sản phẩm: ";
     cin>>f1;
     while(f1<1 || f1>31){
@@ -159,7 +156,6 @@ void Additem(LinkedList& L){
       cout<<"\nNhập ngày hết hạn của sản phẩm: ";
       cin>>f1;
     }
-    cin.ignore();
     cout<<"\nNhập tháng hết hạn của sản phẩm: ";
     cin>>f2;
     while(f2<1 || f2>12){
@@ -167,7 +163,6 @@ void Additem(LinkedList& L){
       cout<<"\nNhập tháng hết hạn của sản phẩm: ";
       cin>>f2;
     }
-    cin.ignore();
     cout<<"\nNhập năm hết hạn của sản phẩm: ";
     cin>>f3;
     while(f3<1900+timeinfo->tm_year){
